@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Application Overview
 
-Clipplex is a Flask-based web application that extracts video clips from media files being streamed through Plex. It allows users to create short video clips and snapshots from currently playing content.
+Clippar is a Flask-based web application that extracts video clips from media files being streamed through Plex. It allows users to create short video clips and snapshots from currently playing content.
 
 ## Architecture
 
 ### Core Components
 
 - **Main Entry Point**: `main.py` - Simple Flask app launcher
-- **API Layer**: `clipplexAPI.py` - Core business logic with four main classes:
+- **API Layer**: `clipparAPI.py` - Core business logic with four main classes:
   - `PlexInfo`: Handles Plex server communication and session management
   - `Snapshot`: Extracts frame snapshots using FFmpeg
   - `Video`: Creates video clips with metadata preservation
@@ -40,15 +40,15 @@ Clipplex is a Flask-based web application that extracts video clips from media f
 flask run --host 0.0.0.0
 
 # Docker build
-docker build -t clipplex .
+docker build -t clippar .
 
 # Docker run with environment variables
-docker run -d --name clipplex -p 9945:5000 \
+docker run -d --name clippar -p 9945:5000 \
   -v /media:/media \
-  -v /volumes/clipplex:/app/app/static/media \
+  -v /volumes/clippar:/app/app/static/media \
   -e PLEX_URL=http://plex:32400 \
   -e PLEX_TOKEN=your_token \
-  clipplex:latest
+  clippar:latest
 ```
 
 ### Dependencies

@@ -1,1 +1,1 @@
-"""API routers for Clipplex."""
+"""API routers for Clippar."""

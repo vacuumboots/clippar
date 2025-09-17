@@ -1,4 +1,4 @@
-"""FastAPI application for Clipplex."""
+"""FastAPI application for Clippar."""
 
 import logging
 from contextlib import asynccontextmanager
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Application lifespan manager."""
     # Startup
-    logger.info("Starting Clipplex application")
+    logger.info("Starting Clippar application")
     
     # Create required directories
     media_dirs = [
@@ -37,12 +37,12 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("Shutting down Clipplex application")
+    logger.info("Shutting down Clippar application")
 
 
 # Create FastAPI app
 app = FastAPI(
-    title="Clipplex",
+    title="Clippar",
     description="Extract video clips from Plex media streams",
     version="2.0.0",
     lifespan=lifespan
@@ -72,7 +72,7 @@ app.include_router(clips.router, prefix="/api/clips", tags=["clips"])
 @app.get("/")
 async def root():
     """Root endpoint."""
-    return {"message": "Clipplex API v2.0", "docs": "/docs"}
+    return {"message": "Clippar API v2.0", "docs": "/docs"}
 
 
 @app.get("/health")

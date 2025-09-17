@@ -1,12 +1,12 @@
-# Clipplex
+# Clippar
 
 Have you ever, while watching something on your Plex server, wanted to easily extract a clip out of a good movie or TV show you're watching to share it with your friends or family? While this was always possible, the process can be complex for something "so simple".
 
-![](https://github.com/jo-nike/clipplex/blob/master/example.gif)
+![](https://github.com/vacuumboots/clippar/blob/master/example.gif)
 
 ## Description
 
-Clipplex is a modern web application that extracts video clips and snapshots from media files being streamed through Plex. It allows users to create short video clips with preserved metadata from currently playing content, making it easy to share memorable moments from your media library.
+Clippar is a modern web application that extracts video clips and snapshots from media files being streamed through Plex. It allows users to create short video clips with preserved metadata from currently playing content, making it easy to share memorable moments from your media library.
 
 **Key Features:**
 - **Real-time Plex Integration**: Monitor active Plex sessions and extract clips from currently playing media
@@ -72,18 +72,18 @@ You need to mount two locations:
 
 ```bash
 docker run -d \
-  --name clipplex \
+  --name clippar \
   --network your_plex_network \
   -p 9945:5000 \
   -v /path/to/your/media:/media:ro \
-  -v /path/to/clipplex/output:/app/app/static/media \
+  -v /path/to/clippar/output:/app/app/static/media \
   -e PLEX_URL=http://plex:32400 \
   -e PLEX_TOKEN=your_plex_token \
   -e PUID=1000 \
   -e PGID=1000 \
   -e TZ=America/New_York \
   --restart unless-stopped \
-  jonnike/clipplex:latest
+  vacuumboots/clippar:latest
 ```
 
 ### Docker Compose Example
@@ -92,9 +92,9 @@ docker run -d \
 version: "3.8"
 
 services:
-  clipplex:
-    image: jonnike/clipplex:latest
-    container_name: clipplex
+  clippar:
+    image: vacuumboots/clippar:latest
+    container_name: clippar
     environment:
       - PLEX_URL=http://plex:32400
       - PLEX_TOKEN=your_plex_token
@@ -110,7 +110,7 @@ services:
       - /path/to/your/movies:/movies:ro
       - /path/to/your/media:/media:ro
       # Output directory for generated clips
-      - ./clipplex-data:/app/app/static/media
+      - ./clippar-data:/app/app/static/media
     ports:
       - "9945:5000"
     networks:

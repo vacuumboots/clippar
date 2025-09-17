@@ -2,7 +2,7 @@ import time
 from flask import render_template, redirect, request, jsonify
 from app import app
 from app.forms import video as formVideo
-import clipplexAPI
+import clipparAPI
 
 @app.route("/")
 def home():
@@ -10,12 +10,12 @@ def home():
 
 @app.route("/instant_snapshot.html", methods=["GET"])
 def instant_snapshot():
-    return render_template("instant_snapshot.html", title="Instant Snapshot", images=clipplexAPI.Utils.get_images_in_folder())
+    return render_template("instant_snapshot.html", title="Instant Snapshot", images=clipparAPI.Utils.get_images_in_folder())
 
 @app.route("/get_instant_snapshot", methods=["GET"])
 def get_instant_snapshot():
-    plex_data = clipplexAPI.PlexInfo("jonike") #DEBUG
-    snapshot = clipplexAPI.Snapshot(plex_data.media_path, plex_data.current_media_time_str, plex_data.media_fps)
+    plex_data = clipparAPI.PlexInfo("jonike") #DEBUG
+    snapshot = clipparAPI.Snapshot(plex_data.media_path, plex_data.current_media_time_str, plex_data.media_fps)
     snapshot._download_frames()
     return "Files downloaded"
 
@@ -23,7 +23,7 @@ def get_instant_snapshot():
 def get_current_stream():
     username = request.args.get("username")
     try:
-        plex = clipplexAPI.PlexInfo(username)
+        plex = clipparAPI.PlexInfo(username)
     except:
         return {"message": f"No session running for user {username}"}
     return {"file_path": str(plex.media_path), "username": username, "current_time": plex.current_media_time_str, "media_title": plex.media_title}
@@ -31,25 +31,25 @@ def get_current_stream():
 @app.route("/instant_video.html", methods=["GET"])
 def timed_video():
     form = formVideo()
-    return render_template("instant_video.html", form=form, title="Instant Video", videos=clipplexAPI.Utils.get_videos_in_folder())
+    return render_template("instant_video.html", form=form, title="Instant Video", videos=clipparAPI.Utils.get_videos_in_folder())
 
 @app.route("/create_video", methods=["POST"])
 def create_video():
     args = request.args
-    _pad_time = clipplexAPI.Utils()._pad_time
+    _pad_time = clipparAPI.Utils()._pad_time
     start = f"{_pad_time(args.get('start_hour'))}:{_pad_time(args.get('start_minute'))}:{_pad_time(args.get('start_second'))}"
     end = f"{_pad_time(args.get('end_hour'))}:{_pad_time(args.get('end_minute'))}:{_pad_time(args.get('end_second'))}"
     result = get_instant_video(args.get('username'), start, end)
     return jsonify(result)
 
 def get_instant_video(username, start, end):
-    plex_data = clipplexAPI.PlexInfo(username)
-    clip_time = clipplexAPI.Utils().calculate_clip_time(start, end)
+    plex_data = clipparAPI.PlexInfo(username)
+    clip_time = clipparAPI.Utils().calculate_clip_time(start, end)
     media_name = plex_data.media_title.replace(" ", "")
     file_name = f"{username}_{media_name}_{int(time.time())}"
     current_media_time = plex_data.current_media_time_str
     print(f"Creating video of {clip_time} seconds starting at {start} for user {username} for file {plex_data.media_path}")
-    video = clipplexAPI.Video(plex_data, start, clip_time, file_name)
+    video = clipparAPI.Video(plex_data, start, clip_time, file_name)
     video.extract_video()
     return {"result":"success"}
 
@@ -57,13 +57,13 @@ def get_instant_video(username, start, end):
 def quick_add_time_to_start_time():
     start_time = request.args.get("start_time")
     time_to_add = int(request.args.get("time_to_add"))
-    return clipplexAPI.Utils().add_time(start_time, time_to_add)
+    return clipparAPI.Utils().add_time(start_time, time_to_add)
 
 @app.route("/remove_file", methods=["POST"])
 #@login_required
 def remove_file():
     video_path = request.args.get("file_path")
-    if clipplexAPI.Utils().delete_file(video_path):
+    if clipparAPI.Utils().delete_file(video_path):
         return redirect("/instant_video.html")
     else:
         return "Problem downloading the file"

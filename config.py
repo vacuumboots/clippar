@@ -1,4 +1,4 @@
-"""Configuration management for Clipplex."""
+"""Configuration management for Clippar."""
 
 import os
 from typing import Optional

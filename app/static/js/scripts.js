@@ -61,9 +61,9 @@ function uuidv4() {
 function getPlexHeaders(clientID) {
     return {
         'Accept': 'application/json',
-        'X-Plex-Product': 'Clipplex',
+        'X-Plex-Product': 'Clippar',
         'X-Plex-Version': 'Plex OAuth',
-        'X-Plex-Client-Identifier': clientID ? clientID : getLocalStorage('Clipplex_ClientID', uuidv4(), false),
+        'X-Plex-Client-Identifier': clientID ? clientID : getLocalStorage('Clippar_ClientID', uuidv4(), false),
         'X-Plex-Platform': p.name,
         'X-Plex-Platform-Version': p.version,
         'X-Plex-Model': 'Plex OAuth',

@@ -21,12 +21,12 @@ services:
     networks:
       - media-net
 
-  # Clipplex service - copy this section to your production compose file
-  clipplex:
+  # Clippar service - copy this section to your production compose file
+  clippar:
     build:
-      context: ./clipplex  # Path to your clipplex directory
+      context: ./clippar  # Path to your clippar directory
       dockerfile: Dockerfile
-    container_name: clipplex
+    container_name: clippar
     ports:
       - "9945:5000"
     volumes:
@@ -35,7 +35,7 @@ services:
       - /path/to/movies:/movies:ro
       - /path/to/media:/media:ro
       # Volume for generated clips and snapshots
-      - ./clipplex-data:/app/app/static/media
+      - ./clippar-data:/app/app/static/media
     environment:
       - PLEX_URL=http://plex:32400  # Use your Plex service name
       - PLEX_TOKEN=${PLEX_TOKEN}
@@ -49,20 +49,20 @@ services:
       - media-net
 
   # Development version with hot reload (optional)
-  clipplex-dev:
+  clippar-dev:
     build:
-      context: ./clipplex
+      context: ./clippar
       dockerfile: Dockerfile
-    container_name: clipplex-dev
+    container_name: clippar-dev
     ports:
       - "9946:5000"  # Different port for dev
     volumes:
       - /path/to/tv:/tv:ro
       - /path/to/movies:/movies:ro
       - /path/to/media:/media:ro
-      - ./clipplex-data:/app/app/static/media
+      - ./clippar-data:/app/app/static/media
       # Mount source code for development
-      - ./clipplex:/app
+      - ./clippar:/app
     environment:
       - PLEX_URL=http://plex:32400
       - PLEX_TOKEN=${PLEX_TOKEN}

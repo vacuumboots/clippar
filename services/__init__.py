@@ -1,1 +1,1 @@
-"""Services for Clipplex application."""
+"""Services for Clippar application."""

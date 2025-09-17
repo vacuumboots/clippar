@@ -1,5 +1,8 @@
 # Clippar
 
+## forked from [jo-nike/clipplex](https://github.com/jo-nike/clipplex)
+
+
 Have you ever, while watching something on your Plex server, wanted to easily extract a clip out of a good movie or TV show you're watching to share it with your friends or family? While this was always possible, the process can be complex for something "so simple".
 
 ![](https://github.com/vacuumboots/clippar/blob/master/example.gif)
@@ -194,6 +197,7 @@ python main.py  # Will show deprecation warning
 ## Authors
 
 **Jo Nike** - Original creator
+**vacuumboots** - Author of the fork
 
 ## License
 
@@ -201,6 +205,4 @@ Distributed under the MIT License. See the LICENSE file for more information.
 
 ## Acknowledgments
 
-* Thanks to the residents of Flavortown for allowing me to pitch my ideas and share my progress with them
-* Thanks to [Start Bootstrap](https://github.com/startbootstrap/startbootstrap-sb-admin) for the UI components
-* Built with love for the Plex community
+

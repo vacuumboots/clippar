@@ -118,7 +118,6 @@
         <td>
           <a href="{{file_path}}" download=""><i class="fas fa-download iconColumn" style="font-size: 50px;"></i></a><br><br>
           <button type='button' class="fas fa-trash-alt" onclick='remove_file("{{file_path}}")' class="iconColumn" style="font-size: 50px; color: red;"></button><br><br>
-          <img src="static/icons/streamable.png" height="50px" onclick='upload_streamable("{{file_path}}")' width="75px" class="iconColumn"><br><br>
           <img src="static/icons/imgur.png" height="50px" width="90px" class="iconColumn"><br>
         </td>
       </tr>
@@ -204,29 +203,6 @@
     document.getElementById("end_hour").value = "";
     document.getElementById("end_minute").value = "";
     document.getElementById("end_second").value = "";
-  }
-  function upload_streamable(file){
-    const Http = new XMLHttpRequest();
-    const url='/streamable_upload?file_path='+file;
-    Http.open("POST", url, true);
-    $('#layoutSidenav').css({'filter': 'blur(8px)', '-webkit-filter': 'blur(8px)'})
-    $('body').append('<div style="" id="loadingDiv"><div class="loader"></div><div class="loaderSecondLine">Uploading video...</div></div>');
-    Http.onload = function (e) {
-      if (Http.readyState === 4) {
-        if (Http.status === 200) {
-          const obj = JSON.parse(Http.responseText);
-          $('#loadingDiv').remove()
-          $('#layoutSidenav').css({'filter': '', '-webkit-filter': ''})
-          $('#Info').text("Video uploaded to Streamable. URL: https://streamable.com/"+obj.shortcode)
-        } else {
-          console.error(Http.statusText);
-          $('#loadingDiv').remove()
-          $('#layoutSidenav').css({'filter': '', '-webkit-filter': ''})
-          $('#Info').text("Streamable: "+Http.statusText)
-        }
-      }
-    };
-    Http.send();
   }
   function remove_file(file){
     const Http = new XMLHttpRequest();

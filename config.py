@@ -13,10 +13,6 @@ class Settings(BaseSettings):
     plex_url: str
     plex_token: str
     
-    # Optional Streamable Configuration  
-    streamable_login: Optional[str] = None
-    streamable_password: Optional[str] = None
-    
     # Application Configuration
     secret_key: str = "change-this-in-production"
     debug: bool = False
@@ -53,19 +49,3 @@ class PlexConfig(BaseModel):
         )
 
 
-class StreamableConfig(BaseModel):
-    """Streamable service configuration."""
-    login: Optional[str]
-    password: Optional[str]
-    
-    @classmethod  
-    def from_settings(cls) -> "StreamableConfig":
-        return cls(
-            login=settings.streamable_login,
-            password=settings.streamable_password
-        )
-    
-    @property
-    def is_configured(self) -> bool:
-        """Check if Streamable credentials are provided."""
-        return self.login is not None and self.password is not None

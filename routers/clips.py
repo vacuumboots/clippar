@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from services.clip_service import ClipService, ClipRequest
 from services.plex_service import PlexService, get_plex_service
+from routers.auth import get_current_user
 
 
 router = APIRouter()
@@ -118,14 +119,17 @@ async def get_image_list():
 
 
 @router.delete("/file")
-async def delete_file(file_path: str = Query(..., description="Path to file to delete")):
-    """Delete a media file."""
+async def delete_file(
+    file_path: str = Query(..., description="Path to file to delete"),
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete a media file (requires authentication)."""
     clip_service = ClipService()
     success = clip_service.delete_file(file_path)
-    
+
     if not success:
         raise HTTPException(status_code=404, detail="File not found or could not be deleted")
-    
+
     return {"status": "success", "message": "File deleted"}
 
 

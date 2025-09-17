@@ -68,11 +68,6 @@ def remove_file():
     else:
         return "Problem downloading the file"
 
-@app.route("/streamable_upload", methods=["POST"])
-def streamable_upload():
-    file_path = request.args.get("file_path")
-    upload = clipplexAPI.Utils().streamable_upload(file_path)
-    return upload
 
 @app.route("/login.html", methods=["GET", "POST"])
 def login():

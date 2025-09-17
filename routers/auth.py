@@ -2,7 +2,7 @@
 
 import logging
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Header
 from pydantic import BaseModel
 import httpx
 
@@ -93,3 +93,17 @@ async def auth_status():
         "auth_method": "plex_token",
         "server_configured": bool(settings.plex_url and settings.plex_token)
     }
+
+
+async def get_current_user(x_plex_token: str = Header(..., alias="X-Plex-Token")):
+    """Authentication dependency for protecting endpoints."""
+    auth_service = PlexAuthService()
+    user_info = await auth_service.verify_plex_token(x_plex_token)
+
+    if not user_info:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or missing Plex token"
+        )
+
+    return user_info

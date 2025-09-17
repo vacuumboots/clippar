@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # Example Plex service (adjust to match your existing setup)
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - VERSION=docker
+    volumes:
+      - ./plex/config:/config
+      - /path/to/tv:/tv
+      - /path/to/movies:/movies
+      - /path/to/media:/media
+    ports:
+      - "32400:32400"
+    restart: unless-stopped
+    networks:
+      - media-net
+
+  # Clipplex service - copy this section to your production compose file
+  clipplex:
+    build:
+      context: ./clipplex  # Path to your clipplex directory
+      dockerfile: Dockerfile
+    container_name: clipplex
+    ports:
+      - "9945:5000"
+    volumes:
+      # Mount media directories (must match Plex's paths for file access)
+      - /path/to/tv:/tv:ro
+      - /path/to/movies:/movies:ro
+      - /path/to/media:/media:ro
+      # Volume for generated clips and snapshots
+      - ./clipplex-data:/app/app/static/media
+    environment:
+      - PLEX_URL=http://plex:32400  # Use your Plex service name
+      - PLEX_TOKEN=${PLEX_TOKEN}
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    depends_on:
+      - plex
+    restart: unless-stopped
+    networks:
+      - media-net
+
+  # Development version with hot reload (optional)
+  clipplex-dev:
+    build:
+      context: ./clipplex
+      dockerfile: Dockerfile
+    container_name: clipplex-dev
+    ports:
+      - "9946:5000"  # Different port for dev
+    volumes:
+      - /path/to/tv:/tv:ro
+      - /path/to/movies:/movies:ro
+      - /path/to/media:/media:ro
+      - ./clipplex-data:/app/app/static/media
+      # Mount source code for development
+      - ./clipplex:/app
+    environment:
+      - PLEX_URL=http://plex:32400
+      - PLEX_TOKEN=${PLEX_TOKEN}
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    command: ["python", "-m", "uvicorn", "app_fastapi:app", "--host", "0.0.0.0", "--port", "5000", "--reload"]
+    depends_on:
+      - plex
+    networks:
+      - media-net
+    profiles:
+      - dev  # Only start with: docker-compose --profile dev up
+
+networks:
+  media-net:
+    driver: bridge
+
+# Example .env file contents (create .env file in same directory):
+# PLEX_TOKEN=your_plex_token_here

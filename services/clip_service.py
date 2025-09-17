@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import ffmpeg
 
-from config import settings, StreamableConfig
+from config import settings
 from services.plex_service import PlexService, PlexSession
 
 
@@ -208,14 +208,34 @@ class ClipService:
         return sorted(images)
     
     def delete_file(self, file_path: str) -> bool:
-        """Delete a media file."""
+        """Delete a media file with path traversal protection."""
         try:
             # Remove 'static/' prefix if present
             if file_path.startswith("static/"):
                 file_path = file_path[7:]  # Remove 'static/'
-            
-            full_path = Path(settings.media_static_path).parent / file_path
-            
+
+            # Validate file extension to only allow media files
+            allowed_extensions = {'.mp4', '.jpg', '.jpeg', '.png', '.gif', '.webm', '.mov'}
+            file_extension = Path(file_path).suffix.lower()
+            if file_extension not in allowed_extensions:
+                logger.warning(f"Disallowed file extension: {file_extension}")
+                return False
+
+            # Construct the full path
+            media_base = Path(settings.media_static_path).resolve()
+            full_path = (media_base / file_path).resolve()
+
+            # Ensure the resolved path is within the allowed directory (prevent path traversal)
+            if not str(full_path).startswith(str(media_base)):
+                logger.warning(f"Path traversal attempt blocked: {file_path}")
+                return False
+
+            # Additional check: ensure path only contains videos or images subdirectories
+            relative_path = full_path.relative_to(media_base)
+            if not (relative_path.parts[0] in {'videos', 'images'}):
+                logger.warning(f"Access to disallowed directory: {relative_path}")
+                return False
+
             if full_path.exists() and full_path.is_file():
                 full_path.unlink()
                 logger.info(f"Deleted file: {full_path}")
@@ -223,8 +243,8 @@ class ClipService:
             else:
                 logger.warning(f"File not found: {full_path}")
                 return False
-                
-        except Exception as e:
+
+        except (ValueError, OSError) as e:
             logger.error(f"Failed to delete file {file_path}: {e}")
             return False
     

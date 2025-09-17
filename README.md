@@ -196,13 +196,13 @@ python main.py  # Will show deprecation warning
 
 ## Authors
 
-**Jo Nike** - Original creator
-**vacuumboots** - Author of the fork
+- **Jo Nike** - Original creator
+- **vacuumboots** - Author of the fork
 
 ## License
 
 Distributed under the MIT License. See the LICENSE file for more information.
 
-## Acknowledgments
+
 
 
